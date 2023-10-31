@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import '../App.css';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // API request to login the user with email and password
+
+    try {
+      const response = await axios.post('http://localhost:5000/login', { 
+        username: email,
+        password,
+      });
+
+      console.log(response.data); // Log server's response to the console
+    } catch (error) {
+      console.error('Sorry! There appears to be an error...', error);
+    }
   };
 
   return (
