@@ -5,6 +5,7 @@ const port = process.env.PORT || 5000;
 
 // Parse body of incoming POST requests
 app.use(express.json());
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 });
@@ -12,12 +13,12 @@ app.get('/', (req, res) => {
 app.post('/register', (req, res) => {
   const { username, password, gender } = req.body;
 
-  db.any('INSERT INTO users(username, password, gender) VALUES($1, $2, $3)', [username, password, gender])
-    .then(() => {
-      res.status(201).json({ status: 'success', message: 'User added' });
+  db.any('INSERT INTO users(username, password, gender) VALUES($1, $2, $3) RETURNING *', [username, password, gender])
+    .then(user => {
+      res.status(201).json(user[0]);
     })
     .catch((err) => {
-      res.status(500).json({ status: 'error', message: err });
+      res.status(500).json({ error: err.message });
     });
 });
 
@@ -27,13 +28,13 @@ app.post('/login', (req, res) => {
   db.any('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password])
     .then((user) => {
       if (user.length > 0) {
-        res.status(200).json({ status: 'success', user: user[0] });
+        res.status(200).json(user[0]);
       } else {
-        res.status(401).json({ status: 'error', message: 'Invalid username or password' });
+        res.status(401).json({ error: 'Invalid username or password' });
       }
     })
     .catch((err) => {
-      res.status(500).json({ status: 'error', message: err });
+      res.status(500).json({ error: err.message });
     });
 });
 
