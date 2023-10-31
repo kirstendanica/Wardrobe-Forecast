@@ -4,7 +4,7 @@ function Dashboard() {
   return (
     <div>
       <h1>Dashboard</h1>
-      {/* Add the dashboard content here later */}
+      <p>For viewing user's results</p>
     </div>
   );
 }
